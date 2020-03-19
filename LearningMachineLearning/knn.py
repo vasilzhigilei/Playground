@@ -2,6 +2,14 @@ from collections import Counter
 import math
 
 def knn(data, query, k):
+    """
+    A K-nearest-neighbor implementation. Takes in data in the form of a list of lists,
+    a query, as well as how many nearest neighbors to find (k).
+    :param data: list holding data points, which consist of lists of x-dimension variables
+    :param query: list withholding last variable of a data point (what knn is trying to guess)
+    :param k: number of nearest neighbors to use
+    :return: k-closest distances, knn guess for the query
+    """
     # List of distance & index lists
     distances = []
 
@@ -17,6 +25,11 @@ def knn(data, query, k):
     return distances, Counter([data[i][1] for distance, i in distances]).most_common(1)[0][0]
 
 def test():
+    """
+    Tests knn with an arbitrary hard-coded data set.
+    Prints results as a side-effect.
+    :return: None
+    """
     # Age data with 5 different options, 0, 1, 2, 3, or 4
     clf_data = [
         [22, 2], [67, 1], [32, 4],
@@ -39,5 +52,6 @@ def test():
         print(clf_data[i])
     print("Prediction of query:", clf_prediction)
 
+# Runs test function
 if __name__ == '__main__':
     test()
