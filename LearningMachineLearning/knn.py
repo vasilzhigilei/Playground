@@ -1,17 +1,20 @@
-import statistics
+from collections import Counter
 import math
 
 def knn(data, query, k):
     # List of distance & index lists
     distances = []
 
-    for label, value in data:
-        distances.append([math.sqrt(pow(label - query[0], 2) + pow(value, 2)), label])
-    print(distances)
+    for index, current in enumerate(data):
+        distances.append([math.sqrt(pow(current[0] - query[0], 2)), index])
+
     # Sort distances in ascending order
     distances = sorted(distances)
-    print(distances)
-    return statistics.mode(distances[:k][1])
+
+    # Nearest k-neighbors only
+    distances = distances[:k]
+
+    return distances, Counter([data[i][1] for distance, i in distances]).most_common(1)[0][0]
 
 def test():
     # Age data with 5 different options, 0, 1, 2, 3, or 4
@@ -30,8 +33,11 @@ def test():
 
     clf_query = [33]
     clf_k_nearest_neighbors, clf_prediction = knn(clf_data, clf_query, k=3)
-    print("Nearest neighbors of query " + clf_query[0] + " are " + clf_k_nearest_neighbors)
-    print("Prediction of query: " + clf_prediction)
+    print("Nearest neighbors [distance, list-index] of query", clf_query[0], "are", clf_k_nearest_neighbors)
+    print("Nearest neighbor data:")
+    for distance, i in clf_k_nearest_neighbors:
+        print(clf_data[i])
+    print("Prediction of query:", clf_prediction)
 
 if __name__ == '__main__':
     test()
