@@ -3,7 +3,7 @@ import dlib
 import numpy as np
 from imutils import face_utils
 import pyautogui
-from threading import Thread
+import threadclasses
 import time
 
 face_landmark_path = './shape_predictor_68_face_landmarks.dat'
@@ -63,57 +63,46 @@ def get_head_pose(shape):
     _, _, _, _, _, _, euler_angle = cv2.decomposeProjectionMatrix(pose_mat)
 
     return reprojectdst, euler_angle
-ret = None
-frame = None
-cap = cv2.VideoCapture(0)
-def update():
-    global ret, frame, cap
-    while True:
-        ret, frame = cap.read()
 
 def main():
     # return
     pyautogui.PAUSE = 0 # default safety 0.1 delay, huge fps loss if not 0
-    if not cap.isOpened():
-        print("Unable to connect to camera.")
-        return
+
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(face_landmark_path)
 
     frames = 0
 
-    Thread(target=update, args=()).start()
+    video = threadclasses.VideoGet().start()
 
-    global ret, frame
-    while cap.isOpened():
+    while True:
+        frame = video.frame
+        face_rects = detector(frame, 0)
 
-        if ret:
-            face_rects = detector(frame, 0)
+        if len(face_rects) > 0:
+            shape = predictor(frame, face_rects[0])
+            shape = face_utils.shape_to_np(shape)
 
-            if len(face_rects) > 0:
-                shape = predictor(frame, face_rects[0])
-                shape = face_utils.shape_to_np(shape)
+            reprojectdst, euler_angle = get_head_pose(shape)
 
-                reprojectdst, euler_angle = get_head_pose(shape)
+            for (x, y) in shape:
+                cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 
-                for (x, y) in shape:
-                    cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
+            for start, end in line_pairs:
+                cv2.line(frame, reprojectdst[start], reprojectdst[end], (0, 0, 255))
 
-                for start, end in line_pairs:
-                    cv2.line(frame, reprojectdst[start], reprojectdst[end], (0, 0, 255))
+            cv2.putText(frame, "X: " + "{:7.2f}".format(euler_angle[0, 0]), (20, 20), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.75, (255, 255, 255), thickness=2)
+            cv2.putText(frame, "Y: " + "{:7.2f}".format(euler_angle[1, 0]), (20, 50), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.75, (255, 255, 255), thickness=2)
+            cv2.putText(frame, "Z: " + "{:7.2f}".format(euler_angle[2, 0]), (20, 80), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.75, (255, 255, 255), thickness=2)
 
-                cv2.putText(frame, "X: " + "{:7.2f}".format(euler_angle[0, 0]), (20, 20), cv2.FONT_HERSHEY_SIMPLEX,
-                            0.75, (255, 255, 255), thickness=2)
-                cv2.putText(frame, "Y: " + "{:7.2f}".format(euler_angle[1, 0]), (20, 50), cv2.FONT_HERSHEY_SIMPLEX,
-                            0.75, (255, 255, 255), thickness=2)
-                cv2.putText(frame, "Z: " + "{:7.2f}".format(euler_angle[2, 0]), (20, 80), cv2.FONT_HERSHEY_SIMPLEX,
-                            0.75, (255, 255, 255), thickness=2)
-
-                pyautogui.moveTo(euler_angle[1, 0]*34 + 960, euler_angle[0, 0] * 54 + 540)
-            cv2.imshow("demo", frame)
-            frames+=1;
-            if ((cv2.waitKey(1) & 0xFF == ord('q'))):
-                return frames
+            pyautogui.moveTo(euler_angle[1, 0]*34 + 960, euler_angle[0, 0] * 54 + 540)
+        cv2.imshow("demo", frame)
+        frames+=1;
+        if ((cv2.waitKey(1) & 0xFF == ord('q')) or video.stopped):
+            return frames
 
 if __name__ == '__main__':
     start = time.time()
