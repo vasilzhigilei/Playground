@@ -3,6 +3,7 @@ import dlib
 import numpy as np
 from imutils import face_utils
 import pyautogui
+import time
 face_landmark_path = './shape_predictor_68_face_landmarks.dat'
 
 K = [6.5308391993466671e+002, 0.0, 3.1950000000000000e+002,
@@ -70,6 +71,7 @@ def main():
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(face_landmark_path)
 
+    frames = 0
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
@@ -93,10 +95,17 @@ def main():
                             0.75, (255, 255, 255), thickness=2)
                 cv2.putText(frame, "Z: " + "{:7.2f}".format(euler_angle[2, 0]), (20, 80), cv2.FONT_HERSHEY_SIMPLEX,
                             0.75, (255, 255, 255), thickness=2)
+
                 pyautogui.moveTo(euler_angle[1, 0]*34 + 960, euler_angle[0, 0] * 54 + 540)
             cv2.imshow("demo", frame)
+            frames+=1;
             if ((cv2.waitKey(1) & 0xFF == ord('q'))):
-                break
+                return frames
 
 if __name__ == '__main__':
-    main()
+    start = time.time()
+    frames = main()
+    end = time.time()
+    total_time = end - start
+    print("Total time:", total_time)
+    print("FPS:", frames/total_time)
