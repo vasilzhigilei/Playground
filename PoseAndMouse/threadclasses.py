@@ -1,4 +1,5 @@
 from threading import Thread
+import pyautogui
 import cv2
 
 class VideoGet:
@@ -25,6 +26,30 @@ class VideoGet:
 
     def read(self):
         return self.frame;
+
+    def stop(self):
+        self.stopped = True
+
+
+
+class Mouse():
+
+    def __init__(self):
+        pyautogui.PAUSE = 0  # default safety 0.1 delay, huge fps loss if not 0
+        self.stopped = False
+        self.x, self.y = 960, 540 # default initial positions assuming 1920x1080p monitor
+
+    def start(self):
+        Thread(target=self.move, args=()).start()
+        return self
+
+    def move(self):
+        while not self.stopped:
+            pyautogui.moveTo(self.x, self.y, duration=1)
+
+    def setPos(self, x, y):
+        self.x = x
+        self.y = y
 
     def stop(self):
         self.stopped = True

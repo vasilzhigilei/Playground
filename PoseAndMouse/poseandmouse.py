@@ -2,7 +2,6 @@ import cv2
 import dlib
 import numpy as np
 from imutils import face_utils
-import pyautogui
 import threadclasses
 import time
 
@@ -65,15 +64,13 @@ def get_head_pose(shape):
     return reprojectdst, euler_angle
 
 def main():
-    # return
-    pyautogui.PAUSE = 0 # default safety 0.1 delay, huge fps loss if not 0
-
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(face_landmark_path)
 
     frames = 0
 
     video = threadclasses.VideoGet().start()
+    mouse = threadclasses.Mouse().start()
 
     while True:
         frame = video.read()
@@ -99,11 +96,13 @@ def main():
             cv2.putText(frame, "Z: " + "{:7.2f}".format(euler_angle[2, 0]), (20, 80), cv2.FONT_HERSHEY_SIMPLEX,
                         0.75, (255, 255, 255), thickness=2)
 
-            pyautogui.moveTo(euler_angle[1, 0]*34 + 960, euler_angle[0, 0] * 54 + 540)
+            mouse.setPos(euler_angle[1, 0]*54 + 960, euler_angle[0, 0]*34 + 540)
         cv2.imshow("demo", frame)
         frames+=1;
         if ((cv2.waitKey(1) & 0xFF == ord('q')) or video.stopped):
             video.stop()
+            mouse.stop()
+            cv2.destroyAllWindows()
             return frames
 
 if __name__ == '__main__':
