@@ -76,7 +76,8 @@ def main():
     video = threadclasses.VideoGet().start()
 
     while True:
-        frame = video.frame
+        frame = video.read()
+
         face_rects = detector(frame, 0)
 
         if len(face_rects) > 0:
@@ -102,6 +103,7 @@ def main():
         cv2.imshow("demo", frame)
         frames+=1;
         if ((cv2.waitKey(1) & 0xFF == ord('q')) or video.stopped):
+            video.stop()
             return frames
 
 if __name__ == '__main__':
