@@ -3,7 +3,9 @@ import dlib
 import numpy as np
 from imutils import face_utils
 import pyautogui
+from threading import Thread
 import time
+
 face_landmark_path = './shape_predictor_68_face_landmarks.dat'
 
 K = [6.5308391993466671e+002, 0.0, 3.1950000000000000e+002,
@@ -61,10 +63,17 @@ def get_head_pose(shape):
     _, _, _, _, _, _, euler_angle = cv2.decomposeProjectionMatrix(pose_mat)
 
     return reprojectdst, euler_angle
+ret = None
+frame = None
+cap = cv2.VideoCapture(0)
+def update():
+    global ret, frame, cap
+    while True:
+        ret, frame = cap.read()
 
 def main():
     # return
-    cap = cv2.VideoCapture(0)
+    pyautogui.PAUSE = 0 # default safety 0.1 delay, huge fps loss if not 0
     if not cap.isOpened():
         print("Unable to connect to camera.")
         return
@@ -72,8 +81,12 @@ def main():
     predictor = dlib.shape_predictor(face_landmark_path)
 
     frames = 0
+
+    Thread(target=update, args=()).start()
+
+    global ret, frame
     while cap.isOpened():
-        ret, frame = cap.read()
+
         if ret:
             face_rects = detector(frame, 0)
 
