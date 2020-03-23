@@ -1,6 +1,7 @@
 from threading import Thread
 import pyautogui
 import cv2
+import math
 
 class VideoGet:
     """
@@ -45,7 +46,8 @@ class Mouse():
 
     def move(self):
         while not self.stopped:
-            pyautogui.moveTo(self.x, self.y, duration=1)
+            self.duration = math.sqrt((self.x - pyautogui.position()[0])**2 + (self.y - pyautogui.position()[1])**2)/3000
+            pyautogui.moveTo(self.x, self.y, duration=self.duration)
 
     def setPos(self, x, y):
         self.x = x
