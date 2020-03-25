@@ -46,8 +46,9 @@ class Mouse():
 
     def move(self):
         while not self.stopped:
-            self.duration = math.sqrt((self.x - pyautogui.position()[0])**2 + (self.y - pyautogui.position()[1])**2)/3000
-            pyautogui.moveTo(self.x, self.y, duration=self.duration)
+            self.distance = math.sqrt((self.x - pyautogui.position()[0])**2 + (self.y - pyautogui.position()[1])**2)
+            if(self.distance >= 150):
+                pyautogui.moveTo(self.x, self.y, duration=self.distance/2000)
 
     def setPos(self, x, y):
         self.x = x
