@@ -5,6 +5,7 @@ from imutils import face_utils
 import threadclasses
 import time
 
+# Accurate face predictor dataset
 face_landmark_path = './shape_predictor_68_face_landmarks.dat'
 
 K = [6.5308391993466671e+002, 0.0, 3.1950000000000000e+002,
@@ -64,6 +65,10 @@ def get_head_pose(shape):
     return reprojectdst, euler_angle
 
 def main():
+    """
+    Main function for running the poseandmouse program
+    :return: number of frames taken and processed for final fps calculation in calling function
+    """
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(face_landmark_path)
 
