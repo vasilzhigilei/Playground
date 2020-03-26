@@ -10,15 +10,29 @@ class VideoGet:
     """
 
     def __init__(self):
+        """
+        Initializes the VideoGet class
+        Creates the cv2.VideoCapture stream using the default camera, and grabs initial frame
+        """
         self.stream = cv2.VideoCapture(0)
         self.grabbed, self.frame = self.stream.read()
         self.stopped = False
 
     def start(self):
+        """
+        Starts the thread, running update as the target
+        To be called externally to start the VideoGet thread
+        :return: self
+        """
         Thread(target=self.update, args=()).start()
         return self
 
     def update(self):
+        """
+        Target function for the VideoGet thread
+        Repeatedly grabs next frame if stop conditions do not arise
+        :return: None
+        """
         while not self.stopped:
             if not self.grabbed:
                 self.stopped = True
@@ -26,9 +40,17 @@ class VideoGet:
                 self.grabbed, self.frame = self.stream.read()
 
     def read(self):
+        """
+        Function to be called externally to retrieve current frame
+        :return: self.frame
+        """
         return self.frame;
 
     def stop(self):
+        """
+        Function to be called to stop the VideoGet thread
+        :return: None
+        """
         self.stopped = True
 
 
