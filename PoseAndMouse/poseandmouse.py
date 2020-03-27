@@ -77,6 +77,11 @@ def main():
     video = threadclasses.VideoGet().start()
     mouse = threadclasses.Mouse().start()
 
+    euler_list = [[0,0,0], [0,0,0], [0,0,0],
+                  [0,0,0], [0,0,0], [0,0,0],
+                  [0,0,0], [0,0,0], [0,0,0],
+                  [0,0,0], [0,0,0], [0,0,0]] # list of last n euler angles, used for smoothing via moving average of input data
+
     while True:
         frame = video.read()
 
@@ -87,6 +92,8 @@ def main():
             shape = face_utils.shape_to_np(shape)
 
             reprojectdst, euler_angle = get_head_pose(shape)
+            euler_list.pop(0)
+            euler_list.append(euler_angle)
 
             for (x, y) in shape:
                 cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
@@ -101,7 +108,10 @@ def main():
             cv2.putText(frame, "Z: " + "{:7.2f}".format(euler_angle[2, 0]), (20, 80), cv2.FONT_HERSHEY_SIMPLEX,
                         0.75, (255, 255, 255), thickness=2)
 
-            mouse.setPos(euler_angle[1, 0]*54 + 960, euler_angle[0, 0]*34 + 540)
+            sma_x = np.average([item[1] for item in euler_list])
+            sma_y = np.average([item[0] for item in euler_list])
+
+            mouse.setPos(sma_x*54 + 960, sma_y*34 + 540)
         cv2.imshow("demo", frame)
         frames+=1;
         if ((cv2.waitKey(1) & 0xFF == ord('q')) or video.stopped):
