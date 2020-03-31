@@ -37,7 +37,7 @@ def generate_video():
         date = str(int(img_data[8:10]))
         text = month + " " + date + ", " + year
         frame = cv2.imread(image_location)
-        cv2.putText(frame, text, (20, height-120), cv2.FONT_HERSHEY_SIMPLEX, 4.5, (255, 255, 255), 10)
+        cv2.putText(frame, text, (20, height-160), cv2.FONT_HERSHEY_SIMPLEX, 4.5, (255, 255, 255), 14, cv2.LINE_AA)
         video.write(frame)
 
     cv2.destroyAllWindows()
