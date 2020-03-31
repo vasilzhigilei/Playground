@@ -1,12 +1,14 @@
 import os
 import cv2
 import calendar
+import datetime
 from PIL import Image
 
 path = os.path.join(os.path.dirname(__file__), "input")
 os.chdir(path)
 
 months = list(calendar.month_name)
+days = list(calendar.day_name)
 
 num_of_images = len(os.listdir('.'))
 
@@ -36,8 +38,10 @@ def generate_video():
         month = months[int(img_data[5:7])]
         date = str(int(img_data[8:10]))
         text = month + " " + date + ", " + year
+        weekday = datetime.datetime(int(img_data[:4]), int(img_data[5:7]), int(date)).weekday()
         frame = cv2.imread(image_location)
-        cv2.putText(frame, text, (20, height-160), cv2.FONT_HERSHEY_SIMPLEX, 4.5, (255, 255, 255), 14, cv2.LINE_AA)
+        cv2.putText(frame, days[weekday], (30, height - 190), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 13, cv2.LINE_AA)
+        cv2.putText(frame, text, (30, height-70), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 255, 255), 10, cv2.LINE_AA)
         video.write(frame)
 
     cv2.destroyAllWindows()
