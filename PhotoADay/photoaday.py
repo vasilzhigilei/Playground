@@ -48,11 +48,20 @@ def generate_video():
         weekday = date.weekday()
         date_string = str(calendar.month_name[date.month]) + " " + str(date.day) + ", " + str(date.year)
 
+        # this mess converts the time of day into an AM or PM string
+        AMPM = date.strptime(date.time().__str__()[:5], "%H:%M").strftime("%I:%M %p")
+        AMPM = str(int(AMPM[:2])) + AMPM[2:] # removes leading 0 from hours under double digits
+
         # read frame from image location
         frame = cv2.imread(image_location)
         # add two texts, day of the week above and larger
         cv2.putText(frame, calendar.day_name[weekday], (30, height - 190), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 13, cv2.LINE_AA)
         cv2.putText(frame, date_string, (30, height-70), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 255, 255), 10, cv2.LINE_AA)
+
+        textsize = cv2.getTextSize(AMPM, cv2.FONT_HERSHEY_SIMPLEX, 3, 10)[0]
+        # add hour text to the right
+        cv2.putText(frame, AMPM, (width - 30 - textsize[0], height-70), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 255, 255), 10, cv2.LINE_AA)
+
         # write video frame
         video.write(frame)
 
