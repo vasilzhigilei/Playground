@@ -34,7 +34,8 @@ def generate_video():
 
     height, width, layers = frame.shape
 
-    video = cv2.VideoWriter(video_name, 0, 1, (width, height))
+    # parameter #3 is the framerate
+    video = cv2.VideoWriter(video_name, 0, .8, (width, height))
 
     # loop through all images
     for image in images:
@@ -52,14 +53,18 @@ def generate_video():
         AMPM = date.strptime(date.time().__str__()[:5], "%H:%M").strftime("%I:%M %p")
         AMPM = str(int(AMPM[:2])) + AMPM[2:] # removes leading 0 from hours under double digits
 
+        # all the font sizes and pixel offsets work perfectly for my set of photos, play around with
+        # what works best for you
+
         # read frame from image location
         frame = cv2.imread(image_location)
         # add two texts, day of the week above and larger
         cv2.putText(frame, calendar.day_name[weekday], (30, height - 190), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 13, cv2.LINE_AA)
         cv2.putText(frame, date_string, (30, height-70), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 255, 255), 10, cv2.LINE_AA)
 
+        # get text size to write AMPM from the right side
         textsize = cv2.getTextSize(AMPM, cv2.FONT_HERSHEY_SIMPLEX, 3, 10)[0]
-        # add hour text to the right
+        # add hour text (ie AMPM) on the right
         cv2.putText(frame, AMPM, (width - 30 - textsize[0], height-70), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 255, 255), 10, cv2.LINE_AA)
 
         # write video frame
