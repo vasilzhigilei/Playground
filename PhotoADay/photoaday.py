@@ -42,21 +42,17 @@ def generate_video():
         image_location = os.path.join(image_folder, image)
         # get date and time information
         img_data = Image.open(image_location)._getexif()[36867]
-        # get year
-        year = img_data[:4]
-        # get month
-        month = months[int(img_data[5:7])]
-        # get day of the month
-        date = str(int(img_data[8:10]))
-        # convert all to text
-        text = month + " " + date + ", " + year
-        # get day of the week
-        weekday = datetime.datetime(int(img_data[:4]), int(img_data[5:7]), int(date)).weekday()
+
+        date = datetime.datetime(int(img_data[:4]), int(img_data[5:7]), int(img_data[8:10]), int(img_data[11:13]), int(img_data[14:16]))
+
+        weekday = date.weekday()
+        date_string = str(calendar.month_name[date.month]) + " " + str(date.day) + ", " + str(date.year)
+
         # read frame from image location
         frame = cv2.imread(image_location)
         # add two texts, day of the week above and larger
-        cv2.putText(frame, days[weekday], (30, height - 190), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 13, cv2.LINE_AA)
-        cv2.putText(frame, text, (30, height-70), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 255, 255), 10, cv2.LINE_AA)
+        cv2.putText(frame, calendar.day_name[weekday], (30, height - 190), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 13, cv2.LINE_AA)
+        cv2.putText(frame, date_string, (30, height-70), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 255, 255), 10, cv2.LINE_AA)
         # write video frame
         video.write(frame)
 
