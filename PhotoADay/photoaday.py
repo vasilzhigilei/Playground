@@ -35,7 +35,7 @@ def generate_video():
     height, width, layers = frame.shape
 
     # parameter #3 is the framerate
-    video = cv2.VideoWriter(video_name, 0, .8, (width, height))
+    video = cv2.VideoWriter(video_name, 0, 1, (width, height))
 
     # loop through all images
     for image in images:
