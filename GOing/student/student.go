@@ -1,4 +1,4 @@
-package student
+package main
 
 /*
 Student struct, all member fields are private, access given via funcs
