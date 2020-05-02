@@ -22,10 +22,11 @@ func main() {
 		fmt.Println("closed", reason)
 	})
 	go server.Serve()
-	defer server.Close()
+	defer server.Close() // close server once main returns
 
+	fs := http.FileServer(http.FileSystem(http.Dir("./asset")))
+	http.Handle("/", fs)
 	http.Handle("/socket.io/", server)
-	http.Handle("/", http.FileServer(http.Dir("./asset")))
 	log.Println("Serving at localhost:8000...")
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
