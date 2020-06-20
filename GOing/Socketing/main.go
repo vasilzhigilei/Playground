@@ -21,8 +21,8 @@ func main() {
 	})
 	server.OnEvent("/chat", "msg", func(s socketio.Conn, msg string) string {
 		s.SetContext(msg)
-		fmt.Println(s.Context(), s.ID(), s.Namespace(), s.URL())
-		server.BroadcastToRoom("", s.Rooms()[0], "event:reply", msg)
+		fmt.Println(server.Rooms(""))
+		server.BroadcastToRoom("", "testroom", "reply", msg)
 		return "recv " + msg
 	})
 	server.OnEvent("/", "bye", func(s socketio.Conn) string {
