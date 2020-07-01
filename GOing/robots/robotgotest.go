@@ -1,11 +1,15 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/go-vgo/robotgo"
 )
 
 func main() {
-	robotgo.ScrollMouse(10, "up")
-	robotgo.MouseClick("left", true)
-	robotgo.MoveMouseSmooth(100, 200, 1.0, 100.0)
+	x, y := robotgo.GetMousePos()
+	fmt.Println("pos: ", x, y)
+
+	color := robotgo.GetPixelColor(100, 200)
+	fmt.Println("color---- ", color)
 }
