@@ -7,9 +7,14 @@ import (
 )
 
 func main() {
-	x, y := robotgo.GetMousePos()
-	fmt.Println("pos: ", x, y)
+	bitmap := robotgo.CaptureScreen(-1000, -1000, 1920+1000, 1080+1000)
+	// use `defer robotgo.FreeBitmap(bit)` to free the bitmap
+	defer robotgo.FreeBitmap(bitmap)
 
-	color := robotgo.GetPixelColor(100, 200)
-	fmt.Println("color---- ", color)
+	fmt.Println("...", bitmap)
+
+	fx, fy := robotgo.FindBitmap(bitmap)
+	fmt.Println("FindBitmap------ ", fx, fy)
+
+	robotgo.SaveBitmap(bitmap, "test.png")
 }
