@@ -15,13 +15,12 @@ func main() {
 	}
 	server.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
-		s.Join("testroom")
+		server.JoinRoom("", "testroom", s)
 		fmt.Println("connected:", s.ID())
 		return nil
 	})
 	server.OnEvent("/chat", "msg", func(s socketio.Conn, msg string) string {
 		s.SetContext(msg)
-		fmt.Println(server.Rooms(""))
 		server.BroadcastToRoom("", "testroom", "reply", msg)
 		return "recv " + msg
 	})
