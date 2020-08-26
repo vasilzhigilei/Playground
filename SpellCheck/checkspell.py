@@ -6,9 +6,5 @@ spell = SpellChecker()
 misspelled = spell.unknown(['let', 'us', 'wlak','on','the','groun'])
 
 for word in misspelled:
-    print(word)
-    # Get the one `most likely` answer
-    print(spell.correction(word))
-
-    # Get a list of `likely` options
-    print(spell.candidates(word))
+    # word - most likely word, likely candidates
+    print(word, "-", spell.correction(word), "-", spell.candidates(word))
