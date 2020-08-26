@@ -13,13 +13,17 @@ for url in urllist:
     print("URL:", url)
     file = urllib.request.urlopen(url)
     for line in file:
-        decoded_line = line.decode("utf-8")
-        decoded_line = re.sub('[^A-Za-z ]+', '', decoded_line)
-        print(decoded_line)
-        # find those words that may be misspelled
-        misspelled = spell.unknown(decoded_line)
+        decoded_line = line.decode("utf-8") # decode line
+        decoded_line = re.sub('[^A-Za-z ]+', '', decoded_line) # remove non alphabet characters
+        decoded_line = re.sub(' +', ' ', decoded_line) # remove double whitespace
+        decoded_line = decoded_line.strip() # strip off any beginning and ending whitespace
 
-        for word in misspelled:
-            # word - most likely word, likely candidates
-            print(word, "-", spell.correction(word), "-", spell.candidates(word))
+        # find those words that may be misspelled
+        if not re.match(r'^\s*$', decoded_line):
+            splitline = decoded_line.split(" ")
+            misspelled = spell.unknown(splitline)
+
+            for word in misspelled:
+                # word - most likely word, likely candidates
+                print(word, "-", spell.correction(word), "-", spell.candidates(word))
 
