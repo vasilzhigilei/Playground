@@ -1,11 +1,12 @@
-from spellchecker import spellchecker
+from spellchecker.spellchecker import SpellChecker
 
-spell = spellchecker.SpellChecker()
+spell = SpellChecker()
 
 # find those words that may be misspelled
 misspelled = spell.unknown(['let', 'us', 'wlak','on','the','groun'])
 
 for word in misspelled:
+    print(word)
     # Get the one `most likely` answer
     print(spell.correction(word))
 
