@@ -25,5 +25,5 @@ for url in urllist:
 
             for word in misspelled:
                 # word - most likely word, likely candidates
-                print(word, "-", spell.correction(word), "-", spell.candidates(word))
+                print("WORD:", word, "CORRECTION:", spell.correction(word), "SUGGESTIONS:", spell.candidates(word))
 
