@@ -35,6 +35,50 @@ class ListNode:
     def __init__(self, val=None):
         self.val = val
         self.next = None
+    def toList(self):
+        currentNode = self
+        list = []
+        while(currentNode != None):
+            list.append(currentNode.val)
+            currentNode = currentNode.next
+        return list
+
+"""
+Write code to remove duplicates from an unsorted linked list
+Assumption: linked list is singly linked
+"""
+def rmvduplicates(head):
+    if(head == None):
+        return head
+    charexists = set() #set
+    prevNode = head # default
+    currentNode = head
+    while(currentNode != None):
+        if(currentNode.val in charexists):
+            # if value is in the set, means it already exists, so we must remove it
+            prevNode.next = currentNode.next # prev skips current
+        else:
+            charexists.add(currentNode.val)
+        prevNode = currentNode
+        currentNode = currentNode.next
+    return head
+
+# let's run a little test
+# feed this linkedlist into rmvduplicates
+head = ListNode(0)
+head.next = ListNode(1)
+head.next.next = ListNode(1)
+head.next.next.next = ListNode(2)
+head.next.next.next.next = ListNode(3)
+
+# should get this result linkedlist
+head2 = ListNode(0)
+head2.next = ListNode(1)
+head2.next.next = ListNode(2)
+head2.next.next.next = ListNode(3)
+
+assert(rmvduplicates(head).toList() == head2.toList())
+
 
 """
 Let's make a Stack
