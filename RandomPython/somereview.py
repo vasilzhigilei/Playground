@@ -50,3 +50,16 @@ class Stack:
     def pop(self):
         self.list = self.list[:len(self.list)-1]
         return self.list[-1]
+
+"""
+Let's make a Queue
+"""
+class Queue:
+    def __init__(self):
+        self.list = []
+    def add(self, value):
+        self.list.append(value)
+    def remove(self):
+        toberemoved = self.list[0]
+        self.list = self.list[1:-1]
+        return toberemoved
