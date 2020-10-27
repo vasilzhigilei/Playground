@@ -4,7 +4,6 @@
 """
 Given 2 strings, write a method to decide if one is a permutation of the other.
 """
-
 def permutation(string1, string2):
     if(string1 == None or string2 == None):
         return False #assuming if None, invalid input, rather than considering case of if both None
@@ -29,6 +28,25 @@ assert(permutation(None, None) == False) # assuming any None would be invalid in
 
 
 
+"""
+Let's have a singly linked list
+"""
+class ListNode:
+    def __init__(self, val=None):
+        self.val = val
+        self.next = None
 
+"""
+Let's make a Stack
+"""
+class Stack:
+    def __init__(self):
+        self.list = []
+    def add(self, value):
+        self.list.append(value)
 
-
+    def peek(self):
+        return self.list[-1]
+    def pop(self):
+        self.list = self.list[:len(self.list)-1]
+        return self.list[-1]
